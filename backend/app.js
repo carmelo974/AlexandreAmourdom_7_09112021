@@ -31,6 +31,7 @@ app.use(cors());
 sequelize.initDb();
 
 // points de terminaisons:
+
 //recuperer tous les posts
 require("./src/routes/findAllPosts")(app);
 //recupérer un post
@@ -49,6 +50,12 @@ require("./src/routes/createUser")(app);
 require("./src/routes/findUserByPk")(app);
 //supprimer un user
 require("./src/routes/deleteUser")(app);
+//recupérer tous les users
+require("./src/routes/findAllUser")(app);
+//modifier un user
+require("./src/routes/updateUser")(app);
+//Logout
+// require("./src/routes/logout")(app)
 
 //gestion des erreurs 404
 app.use(({ res }) => {

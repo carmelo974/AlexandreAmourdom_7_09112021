@@ -7,6 +7,14 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+      idUsers: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+      },
 
       title: {
         allowNull: false,
@@ -38,5 +46,12 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: "created",
       updatedAt: false,
     }
-  );
+  )
+  Post.associate = models => {
+    Post.belongsTo(models.User, {
+      foreignKey: {
+        allowNull: false
+      }
+    })
+  }
 };

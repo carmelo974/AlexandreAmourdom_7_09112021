@@ -1,3 +1,5 @@
+const { User } = require("../db/sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define("User", {
     id: {
@@ -23,11 +25,24 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: "champs obligatoire." },
         notNull: { msg: "champs requis." },
       },
+      bio: {
+        allowNull: true,
+        type: DataTypes.STRING
+      },
     },
     isAdmin: {
       allowNull: false,
       type: DataTypes.BOOLEAN,
     },
-  });
+  })
+  
+  User.associate = models => {
+    User.hasMany(models.Post, {
+      onDelete: "cascade"
+    })
+  }
+  
 };
+
+
 /*///////////////////ajouter restriction regex rajouter bio//////////////////////////*/

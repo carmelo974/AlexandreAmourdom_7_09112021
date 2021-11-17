@@ -2,7 +2,8 @@ const { User } = require("../db/sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const privateKey = require("../auth/private_key");
-const { loginErrors } = require("../utils/errors.utils");
+
+const maxAge = 24;
 
 module.exports = (app) => {
   app.post("/api/login", (req, res) => {
@@ -11,16 +12,16 @@ module.exports = (app) => {
     })
       .then((user) => {
         if (!user) {
-          const errors = loginErrors(err);
-          return res.status(404).json({ errors });
+          const message = `L'utilisateur demandé n'existe pas.`;
+          return res.status(401).json({ message });
         }
 
         bcrypt
           .compare(req.body.password, user.password)
           .then((isPasswordValid) => {
             if (!isPasswordValid) {
-              const errors = loginErrors(err);
-              return res.status(401).json({ errors});
+              const message = `Le mot de passe est incorrect`;
+              return res.status(401).json({ message, data: user });
             }
 
             //JWT
@@ -29,6 +30,7 @@ module.exports = (app) => {
             });
 
             const message = `L'utilisateur a été connecté avec succès`;
+            // res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge });
             return res.json({ message, data: user, token });
           });
       })
