@@ -1,7 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const sequelize = require("./src/db/sequelize");
+const cookieParser = require("cookie-parser");
+const authcheckUser = require("./src/middleware/authcheckUser");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 5000;
@@ -11,24 +14,25 @@ app.use(morgan("dev")); // affiche les log des req entrants
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//   // ressoures partagées depuis tte les origines
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     // indication des headers utilisés
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-//   );
-//   res.setHeader(
-//     // indication des méthodes autorisées pr les requête http
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-//   );
-//   next();
-// });
+app.use((req, res, next) => {
+  // ressoures partagées depuis tte les origines
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    // indication des headers utilisés
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader(
+    // indication des méthodes autorisées pr les requête http
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
 
-sequelize.initDb();
+//  sequelize.initDb();
 
 // points de terminaisons:
 
@@ -55,7 +59,14 @@ require("./src/routes/findAllUser")(app);
 //modifier un user
 require("./src/routes/updateUser")(app);
 //Logout
-// require("./src/routes/logout")(app)
+require("./src/routes/logout")(app);
+
+//jwt
+app.get("/jwtid", (req, res) => {
+   const token = jwt.sign({ userId: user.id }, privateKey);
+  // res.cookie("token", token, { httpOnly: true });
+  res.json({ token });
+});
 
 //gestion des erreurs 404
 app.use(({ res }) => {

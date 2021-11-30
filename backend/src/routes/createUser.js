@@ -28,7 +28,10 @@ module.exports = (app) => {
               if (error instanceof UniqueConstraintError) {
                 return res
                   .status(400)
-                  .json({ message: error.message, data: error });
+                  .json({
+                    message: "Cette utilisateur existe déjaaaaa",
+                    data: error,
+                  });
               }
               const message = `L'utilisateur n'a pas pu être crée. Réessayer dans quelques instants`;
               return res.status(500).json({ message, data: error });

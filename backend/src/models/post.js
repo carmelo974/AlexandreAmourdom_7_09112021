@@ -1,3 +1,7 @@
+// const { Post } = require("../db/sequelize");
+
+// const post = require("../db/mock-post");
+
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
     "Post",
@@ -6,14 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-      },
-      idUsers: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        references: {
-          model: "Users",
-          key: "id",
-        },
       },
 
       title: {
@@ -36,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.STRING,
       },
+      comments: {
+        allowNull: true,
+        type: [{}],
+      },
       likes: {
         allowNull: false,
         type: DataTypes.INTEGER,
@@ -46,12 +46,18 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: "created",
       updatedAt: false,
     }
-  )
-  Post.associate = models => {
-    Post.belongsTo(models.User, {
-      foreignKey: {
-        allowNull: false
-      }
-    })
-  }
+  );
+  // post.associate = function (models) {
+  //   post.belongsTo(models.User, { foreignKey: "userId" });
+  // };
 };
+
+// Post.associate = (models) => {
+//   Post.belongsTo(models.User, {
+//     foreignKey: {
+//       foreignKey: 'creatorId',
+//       allowNull: false,
+//     },
+//   });
+//   return Post;
+// };
